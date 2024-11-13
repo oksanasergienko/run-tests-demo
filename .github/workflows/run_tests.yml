@@ -13,19 +13,20 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.10"
       - name: Install Chrome
         run: sudo apt-get install google-chrome-stable
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip install allure-python-commons
       - name: Run tests
         run: pytest --alluredir=allure-results
       - name: Store allure results
         uses: actions/upload-artifact@v4
         with:
           name: allure-results
-          path:
-            allure-results
+          path: allure-results
           retention-days: 1
 
 
@@ -38,23 +39,22 @@ jobs:
         with:
           distribution: 'microsoft'
           java-version: '17'
-      - name: Download and setup Allure
+      - name: Install Allure Commandline
         run: |
-          wget https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.zip
-          unzip allure-2.32.0.zip -d allure
-          sudo mv allure/bin/allure /usr/local/bin/allure
+          sudo apt-add-repository ppa:qameta/allure
+          sudo apt-get update
+          sudo apt-get install allure
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v4
       - run: allure generate -c allure-results -o _site
       - name: Store generated reports
         uses: actions/upload-artifact@v4
-        with: 
+        with:
           name: _site
-          path:
-            _site
+          path: _site
           retention-days: 1
 
-  
+          
   publish-report:
     runs-on: ubuntu-latest
     needs: generate-report
