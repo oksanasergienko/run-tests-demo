@@ -12,6 +12,12 @@ def browser():
     return chrome_browser
 
 
-def test_button_exist(browser):
+def test_button_exist1(browser):
     browser.get('https://www.qa-practice.com/elements/button/simple')
     assert browser.find_element(By.ID, 'submit-id-submit').is_displayed()
+
+
+def test_button_exist2(browser):
+    browser.get('https://www.qa-practice.com/elements/button/like_a_button')
+    assert browser.find_element(By.LINK_TEXT, 'Click').is_displayed()
+
